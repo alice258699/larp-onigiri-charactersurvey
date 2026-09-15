@@ -762,6 +762,7 @@ const renderOrganizerDashboard = () => {
         
         ${tabsHtml}
         ${contentHtml}
+    `;
     } catch(err) {
         console.error(err);
         div.innerHTML = `<div style="padding:30px; text-align:center; color:red;">發生錯誤：${err.message}<br><button onclick="render()">重新整理</button></div>`;
