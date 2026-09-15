@@ -640,6 +640,7 @@ const renderOrganizerDashboard = () => {
     const div = document.createElement('div');
     div.className = 'view-container';
     div.style.backgroundColor = '#f1f3f5';
+    try {
     
     const filterSession = state.currentFilterSession;
     let filteredPlayers = state.players;
@@ -699,11 +700,18 @@ const renderOrganizerDashboard = () => {
                 </div>
                 <div style="background:white; padding:15px; border-radius:10px; box-shadow: var(--box-shadow);" id="export-canvas-target">
                     <h3 style="text-align:center; margin-bottom:20px; color:var(--dark-blue);">分角結果版面</h3>
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                         ${Object.entries(CHARACTERS).map(([id, char]) => `
-                            <div>
-                                <div class="role-slot-title">${char.name} <span style="font-size:14px;color:#666;">(${char.voice})</span></div>
-                                <div class="role-slot" id="slot-${id}" style="min-height: 80px;"></div>
+                            <div style="background: rgba(108,166,193,0.05); border: 2px solid rgba(108,166,193,0.3); border-radius: 12px; padding: 10px; display: flex; flex-direction: column;">
+                                <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 10px;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        <img src="${char.cover}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 15%;">
+                                    </div>
+                                    <div style="font-weight:bold; color:var(--dark-blue); font-size:16px;">
+                                        ${char.name} <span style="font-size:12px;color:#666;font-weight:normal;">(${char.voice})</span>
+                                    </div>
+                                </div>
+                                <div class="role-slot" id="slot-${id}" style="flex: 1; min-height: 80px; background: rgba(108,166,193,0.1); border-radius: 8px; border: 2px dashed rgba(108,166,193,0.5); padding: 8px;"></div>
                             </div>
                         `).join('')}
                     </div>
@@ -754,7 +762,10 @@ const renderOrganizerDashboard = () => {
         
         ${tabsHtml}
         ${contentHtml}
-    `;
+    } catch(err) {
+        console.error(err);
+        div.innerHTML = `<div style="padding:30px; text-align:center; color:red;">發生錯誤：${err.message}<br><button onclick="render()">重新整理</button></div>`;
+    }
 
     return div;
 };
@@ -783,6 +794,7 @@ const renderPlayerCards = () => {
     }
 
     return filteredPlayers.map((player) => {
+        if (!player) return '';
         const actualIdx = state.players.indexOf(player);
         const scores = calculateScores(player);
         
@@ -792,25 +804,44 @@ const renderPlayerCards = () => {
         }
         
         const sortedChars = validChars.sort((a,b) => b[1] - a[1]);
-        const recommendedList = sortedChars.slice(0,3);
-        const recommendedDisplay = recommendedList.map(c => `<span style="color: var(--dark-blue); font-weight: bold;">${CHARACTERS[c[0]].name} (${c[1].toFixed(1)}%)</span>`).join(' > ');
-        const top3Sum = recommendedList.reduce((sum, c) => sum + c[1], 0);
+        const top1 = sortedChars[0];
+        let recommendedDisplay = '無推薦';
+        if (top1) {
+            recommendedDisplay = `<span style="color: var(--primary-color); font-weight: bold; font-size: 16px;">${CHARACTERS[top1[0]].name} (${top1[1].toFixed(1)}%)</span>`;
+        }
 
         return `
-            <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 15px;">
+            <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white; border: 2px solid transparent; transition: all 0.3s;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0;">${player.name} (${player.gender})</h3>
-                    <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:20px;">×</button>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h3 style="margin:0; font-size: 16px; color: var(--dark-blue);">${player.name} (${player.gender})</h3>
+                        <button onclick="showPlayerDetails(${actualIdx})" style="background:none; border:none; cursor:pointer; font-size:16px; padding:0; color: var(--primary-color);" title="查看詳細資料">🔍</button>
+                    </div>
+                    <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:20px; padding:0; line-height: 1;">×</button>
                 </div>
-                <div style="font-size:14px; margin-top:10px; margin-bottom:5px;">前三推薦：<br>${recommendedDisplay}</div>
-                <div style="font-size:14px; color: var(--primary-color); font-weight: bold; margin-bottom:10px;">總適配度：${top3Sum.toFixed(1)}%</div>
-                <button onclick="showPlayerDetails(${actualIdx})" style="width:100%; padding:8px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer; font-size:14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🔍 查看填寫資料</button>
+                <div style="font-size:14px; margin-top:8px; color: #666;">首選推薦：${recommendedDisplay}</div>
             </div>
         `;
     }).join('');
 };
 
 const getPlayerDetailsHtml = (player) => {
+    const scores = calculateScores(player);
+    let validChars = Object.entries(scores);
+    if (player.gender === 'M' || player.gender === 'F') {
+        validChars = validChars.filter(([charId]) => charGenders[charId] === player.gender);
+    }
+    const sortedChars = validChars.sort((a,b) => b[1] - a[1]);
+    const recommendedList = sortedChars.slice(0,3);
+    const recommendedDisplay = recommendedList.map(c => `<span style="color: var(--dark-blue); font-weight: bold;">${CHARACTERS[c[0]].name} (${c[1].toFixed(1)}%)</span>`).join(' > ');
+    const top3Sum = recommendedList.reduce((sum, c) => sum + c[1], 0);
+
+    let recHtml = `<div style="background: rgba(108,166,193,0.1); border: 2px solid var(--primary-color); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+        <div style="font-size:13px; margin-bottom:5px;"><b>🏆 前三推薦：</b></div>
+        <div style="font-size:14px; margin-bottom:5px;">${recommendedDisplay}</div>
+        <div style="font-size:13px; color: var(--primary-color); font-weight: bold;">總適配度：${top3Sum.toFixed(1)}%</div>
+    </div>`;
+
     let answerHtml = '';
     QUESTIONS.forEach((q, idx) => {
         const ans = player.answers[q.id] || [];
@@ -854,6 +885,7 @@ const getPlayerDetailsHtml = (player) => {
     
     return `
         <div style="text-align: left;">
+            ${recHtml}
             ${answerHtml}
             ${emoHtml}
             <div style="margin-top:10px; font-weight:bold; color:red; font-size:14px; background:#ffe6e6; padding:8px; border-radius:5px;">備註: ${player.remark || '無'}</div>
