@@ -548,26 +548,30 @@ const calculateScores = (player) => {
     });
 
     // Emotion Scores
-    player.emotions.like.forEach((eid, index) => {
-        const e = EMOTION_LINES.find(x => x.id === eid);
-        if (e) {
-            // Higher in 'like' list -> more points
-            const weight = Math.max(1, 3 - index * 0.5); 
-            for (const [char, val] of Object.entries(e.scores)) {
-                scores[char] += (val * weight);
+    if (player.emotions && player.emotions.like) {
+        player.emotions.like.forEach((eid, index) => {
+            const e = EMOTION_LINES.find(x => x.id === eid);
+            if (e) {
+                // Higher in 'like' list -> more points
+                const weight = Math.max(1, 3 - index * 0.5); 
+                for (const [char, val] of Object.entries(e.scores)) {
+                    scores[char] += (val * weight);
+                }
             }
-        }
-    });
+        });
+    }
 
-    player.emotions.dislike.forEach((eid, index) => {
-        const e = EMOTION_LINES.find(x => x.id === eid);
-        if (e) {
-            for (const [char, val] of Object.entries(e.scores)) {
-                if (val > 0) scores[char] -= (val * 2); // Severe deduction
-                else scores[char] -= (val * 2); // if val is -5, this becomes +10. (Disliking abuse = good for Shigeki)
+    if (player.emotions && player.emotions.dislike) {
+        player.emotions.dislike.forEach((eid, index) => {
+            const e = EMOTION_LINES.find(x => x.id === eid);
+            if (e) {
+                for (const [char, val] of Object.entries(e.scores)) {
+                    if (val > 0) scores[char] -= (val * 2); // Severe deduction
+                    else scores[char] -= (val * 2); // if val is -5, this becomes +10. (Disliking abuse = good for Shigeki)
+                }
             }
-        }
-    });
+        });
+    }
 
     // Convert raw score to percentage
     const MAX_THEORETICAL = 42;
@@ -867,21 +871,25 @@ const getPlayerDetailsHtml = (player) => {
     }
 
     let emoHtml = `<div style="font-size:13px; margin-top:10px;"><b>期待的羈絆:</b><br>`;
-    player.emotions.like.forEach(eid => {
-        const e = EMOTION_LINES.find(x => x.id === eid);
-        const scoreNames = getCharNames(e.scores, player.gender);
-        if (scoreNames) emoHtml += `- ${e.text} <span style="color:var(--primary-color);">(${scoreNames})</span><br>`;
-    });
+    if (player.emotions && player.emotions.like) {
+        player.emotions.like.forEach(eid => {
+            const e = EMOTION_LINES.find(x => x.id === eid);
+            const scoreNames = getCharNames(e.scores, player.gender);
+            if (scoreNames) emoHtml += `- ${e.text} <span style="color:var(--primary-color);">(${scoreNames})</span><br>`;
+        });
+    }
     emoHtml += `<br><b>無法接受的雷點:</b><br>`;
-    player.emotions.dislike.forEach(eid => {
-        const e = EMOTION_LINES.find(x => x.id === eid);
-        if (e) {
-            let invertedScores = {};
-            for (let k in e.scores) invertedScores[k] = -e.scores[k];
-            const scoreNames = getCharNames(invertedScores, player.gender);
-            if (scoreNames) emoHtml += `<div style="color:red;">- ${e.text} (${scoreNames})</div>`;
-        }
-    });
+    if (player.emotions && player.emotions.dislike) {
+        player.emotions.dislike.forEach(eid => {
+            const e = EMOTION_LINES.find(x => x.id === eid);
+            if (e) {
+                let invertedScores = {};
+                for (let k in e.scores) invertedScores[k] = -e.scores[k];
+                const scoreNames = getCharNames(invertedScores, player.gender);
+                if (scoreNames) emoHtml += `<div style="color:red;">- ${e.text} (${scoreNames})</div>`;
+            }
+        });
+    }
     emoHtml += `</div>`;
     
     return `
