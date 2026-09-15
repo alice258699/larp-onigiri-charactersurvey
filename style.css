@@ -1,19 +1,5 @@
 
-@font-face {
-    font-family: 'Kurewa';
-    src: url('KurewaGothicCjkTc-Bold.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
 
-@font-face {
-    font-family: 'OpenHuninn';
-    src: url('粉圓體.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap");
 
