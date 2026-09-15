@@ -63,14 +63,27 @@ const QUESTIONS = [
             { id: 'q4_3', text: '在旁邊默默幫忙準備道具，確認細節。', scores: { hitomi: 2, shigeki: 2 } },
             { id: 'q4_4', text: '雖然嘴上抱怨好麻煩，但還是做得比誰都認真。', scores: { ito: 2 } }
         ]
+    },
+    {
+        id: 'q6',
+        type: 'select',
+        nanaText: '高中生活怎麼可以少了青春的戀愛話題呢！如果在班上遇到感情問題，或是面對喜歡的人，你通常會是什麼態度呀？',
+        options: [
+            { id: 'q6_1', text: '青梅竹馬就是最棒的！即使像歡喜冤家一樣吵吵鬧鬧，這才是真愛啊！', scores: { matsutani: 2, hiroko: 2 } },
+            { id: 'q6_2', text: '我只敢默默地暗戀對方，可能會用比較隱晦的方式（例如音樂、小禮物）來傳達心意。', scores: { shigeki: 3 } },
+            { id: 'q6_3', text: '我敢愛敢恨！如果發現對方是個花心的渣男/渣女，絕對立馬果斷分手，絕不留戀！', scores: { chizuru: 3 } },
+            { id: 'q6_4', text: '比起談戀愛，我現在更想專注在社團、朋友，或是自己熱愛的事情上，不想分心。', scores: { hitomi: 2, ito: 2 } }
+        ]
     }
 ];
 
 const EMOTION_LINES = [
     { id: 'e1', text: '母親 (與母親相依為命)', scores: { hitomi: 5 } },
-    { id: 'e2', text: '父親 (嚴厲的高壓家庭)', scores: { shigeki: 5 } },
+    { id: 'e2', text: '父親 (家教甚嚴的高壓環境)', scores: { shigeki: 5 } },
+    { id: 'e12', text: '父親 (由單親父親撫養長大)', scores: { hiroko: 5 } },
     { id: 'e3', text: '爺爺奶奶/外公外婆 (隔代教養，與長輩親近)', scores: { chizuru: 4, ito: 4 } },
-    { id: 'e4', text: '兄弟姊妹 (手足情深)', scores: { matsutani: 4, shigeki: 3 } },
+    { id: 'e4', text: '妹妹 (想體驗照顧妹妹的情感)', scores: { matsutani: 4 } },
+    { id: 'e13', text: '姊姊 (想體驗被姊姊保護的情感)', scores: { shigeki: 4 } },
     { id: 'e5', text: '愛情 (默默暗戀)', scores: { shigeki: 4 } },
     { id: 'e6', text: '愛情 (青梅竹馬)', scores: { matsutani: 4, hiroko: 4 } },
     { id: 'e7', text: '愛情 (曾經歷過不好的戀情)', scores: { chizuru: 4 } },
