@@ -782,7 +782,8 @@ const renderPlayerCards = () => {
         filteredPlayers = state.players.filter(p => p.sessionId === filterSession);
     }
 
-    return filteredPlayers.map((player, pIdx) => {
+    return filteredPlayers.map((player) => {
+        const actualIdx = state.players.indexOf(player);
         const scores = calculateScores(player);
         
         let validChars = Object.entries(scores);
@@ -796,14 +797,14 @@ const renderPlayerCards = () => {
         const top3Sum = recommendedList.reduce((sum, c) => sum + c[1], 0);
 
         return `
-            <div class="player-card" data-pidx="${pIdx}" style="cursor:grab; margin-bottom:10px; padding: 15px;">
+            <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 15px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="margin:0;">${player.name} (${player.gender})</h3>
-                    <button onclick="deletePlayer(${pIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:20px;">×</button>
+                    <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:20px;">×</button>
                 </div>
                 <div style="font-size:14px; margin-top:10px; margin-bottom:5px;">前三推薦：<br>${recommendedDisplay}</div>
                 <div style="font-size:14px; color: var(--primary-color); font-weight: bold; margin-bottom:10px;">總適配度：${top3Sum.toFixed(1)}%</div>
-                <button onclick="showPlayerDetails(${pIdx})" style="width:100%; padding:8px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer; font-size:14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🔍 查看填寫資料</button>
+                <button onclick="showPlayerDetails(${actualIdx})" style="width:100%; padding:8px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer; font-size:14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🔍 查看填寫資料</button>
             </div>
         `;
     }).join('');
