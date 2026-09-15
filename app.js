@@ -17,7 +17,7 @@ const QUESTIONS = [
             { id: 'q1_1', text: '喜歡照顧大家，是大家的主心骨', scores: { matsutani: 2, hiroko: 2 } },
             { id: 'q1_2', text: '有點害羞內向，但做事情很認真', scores: { hitomi: 2, shigeki: 2 } },
             { id: 'q1_3', text: '大大咧咧，重情重義，朋友受委屈我第一個上！', scores: { chizuru: 2, ito: 2 } },
-            { id: 'q1_4', text: '表面上可能有點小脾氣，但其實內心很柔軟', scores: { ito: 2, matsutani: 2 } },
+            { id: 'q1_4', text: '表面上可能有點小脾氣，但其實內心很柔軟', scores: { ito: 2, hiroko: 2 } },
             { id: 'q1_5', text: '習慣把心事藏在心裡，默默承受', scores: { shigeki: 2, hitomi: 2 } },
             { id: 'q1_6', text: '獨立自主，遇到困難絕不輕易低頭', scores: { hiroko: 2, chizuru: 2 } }
         ]
@@ -67,17 +67,17 @@ const QUESTIONS = [
 ];
 
 const EMOTION_LINES = [
-    { id: 'e1', text: '親情 (與母親相依為命)', scores: { hitomi: 5 } },
-    { id: 'e2', text: '親情 (嚴厲的高壓家庭)', scores: { shigeki: -5 } }, // Disliking this gives Shigeki points
-    { id: 'e3', text: '親情 (隔代教養，與長輩親近)', scores: { chizuru: 4, ito: 4 } },
-    { id: 'e4', text: '親情 (兄妹情深)', scores: { matsutani: 4 } },
+    { id: 'e1', text: '母親 (與母親相依為命)', scores: { hitomi: 5 } },
+    { id: 'e2', text: '父親 (嚴厲的高壓家庭)', scores: { shigeki: 5 } },
+    { id: 'e3', text: '爺爺奶奶/外公外婆 (隔代教養，與長輩親近)', scores: { chizuru: 4, ito: 4 } },
+    { id: 'e4', text: '兄弟姊妹 (手足情深)', scores: { matsutani: 4, shigeki: 3 } },
     { id: 'e5', text: '愛情 (默默暗戀)', scores: { shigeki: 4 } },
     { id: 'e6', text: '愛情 (青梅竹馬)', scores: { matsutani: 4, hiroko: 4 } },
     { id: 'e7', text: '愛情 (曾經歷過不好的戀情)', scores: { chizuru: 4 } },
-    { id: 'e8', text: '友情 (被朋友無條件保護)', scores: { hitomi: 4 } },
+    { id: 'e8', text: '友情 (被朋友無條件保護)', scores: { hitomi: 4, shigeki: 3 } },
     { id: 'e9', text: '友情 (保護朋友)', scores: { chizuru: 4, ito: 4 } },
-    { id: 'e10', text: '師生情-向上 (身為學生受到老師關懷引導)', scores: { hitomi: 3, ito: 4 } },
-    { id: 'e11', text: '師生情-向下 (身為老師守護並帶領學生)', scores: { matsutani: 5, hiroko: 5 } }
+    { id: 'e10', text: '師生情-向上 (身為學生受到老師關懷引導)', scores: { ito: 5, hitomi: 3, shigeki: 3, chizuru: 3 } },
+    { id: 'e11', text: '師生情-向下 (身為老師守護並帶領學生)', scores: { hiroko: 5, matsutani: 4 } }
 ];
 
 // Firebase Setup
@@ -817,7 +817,7 @@ const renderPlayerCards = () => {
         return `
             <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background: white; border: 2px solid transparent; transition: all 0.3s; width: 100%; box-sizing: border-box;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 4px;">
-                    <h3 style="margin:0; font-size: 14px; color: var(--dark-blue); word-break: break-word; line-height: 1.3;">${player.name} <span style="font-size:12px; font-weight:normal;">(${player.gender})</span></h3>
+                    <h3 style="margin:0; font-size: 14px; color: var(--dark-blue); word-break: break-word; line-height: 1.3;">${player.name} <span style="font-size:12px; font-weight:normal;">(${player.gender === 'M' ? '男' : player.gender === 'F' ? '女' : '不分'})</span></h3>
                     <div style="display:flex; gap: 6px; flex-shrink: 0; margin-top: 2px;">
                         <button onclick="showPlayerDetails(${actualIdx})" style="background:none; border:none; cursor:pointer; font-size:14px; padding:0; color: var(--primary-color);" title="查看詳細資料">🔍</button>
                         <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:16px; padding:0; line-height: 1;">×</button>
@@ -841,6 +841,7 @@ const getPlayerDetailsHtml = (player) => {
     const top3Sum = recommendedList.reduce((sum, c) => sum + c[1], 0);
 
     let recHtml = `<div style="background: rgba(108,166,193,0.1); border: 2px solid var(--primary-color); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+        <div style="font-size:13px; margin-bottom:8px; border-bottom: 1px dashed rgba(108,166,193,0.5); padding-bottom: 5px;"><b>🙋 玩家性別：</b> ${player.gender === 'M' ? '男' : player.gender === 'F' ? '女' : '不分'}</div>
         <div style="font-size:13px; margin-bottom:5px;"><b>🏆 前三推薦：</b></div>
         <div style="font-size:14px; margin-bottom:5px;">${recommendedDisplay}</div>
         <div style="font-size:13px; color: var(--primary-color); font-weight: bold;">總適配度：${top3Sum.toFixed(1)}%</div>
@@ -882,10 +883,13 @@ const getPlayerDetailsHtml = (player) => {
         player.emotions.dislike.forEach(eid => {
             const e = EMOTION_LINES.find(x => x.id === eid);
             if (e) {
-                let invertedScores = {};
-                for (let k in e.scores) invertedScores[k] = -e.scores[k];
-                const scoreNames = getCharNames(invertedScores, player.gender);
-                if (scoreNames) emoHtml += `<div style="color:red;">- ${e.text} (${scoreNames})</div>`;
+                let deductScores = {};
+                for (let k in e.scores) {
+                    if (e.scores[k] > 0) deductScores[k] = -e.scores[k];
+                }
+                const scoreNames = getCharNames(deductScores, player.gender);
+                const displayNames = scoreNames ? scoreNames : '<span style="color:#999;">無扣分影響</span>';
+                emoHtml += `<div style="color:#d9534f; margin-bottom: 3px;">- ${e.text} (${displayNames})</div>`;
             }
         });
     }
