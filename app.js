@@ -171,6 +171,9 @@ const deletePlayerFromDb = (playerObj) => {
 };
 
 const render = () => {
+    const loader = document.getElementById('initial-loader');
+    if (loader) loader.remove();
+
     const app = document.getElementById('app');
     app.innerHTML = '';
 
