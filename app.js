@@ -566,8 +566,7 @@ const calculateScores = (player) => {
             const e = EMOTION_LINES.find(x => x.id === eid);
             if (e) {
                 for (const [char, val] of Object.entries(e.scores)) {
-                    if (val > 0) scores[char] -= (val * 2); // Severe deduction
-                    else scores[char] -= (val * 2); // if val is -5, this becomes +10. (Disliking abuse = good for Shigeki)
+                    if (val > 0) scores[char] -= (val * 2); // Severe deduction ONLY
                 }
             }
         });
@@ -812,19 +811,19 @@ const renderPlayerCards = () => {
         const top1 = sortedChars[0];
         let recommendedDisplay = '無推薦';
         if (top1) {
-            recommendedDisplay = `<span style="color: var(--primary-color); font-weight: bold; font-size: 16px;">${CHARACTERS[top1[0]].name} (${top1[1].toFixed(1)}%)</span>`;
+            recommendedDisplay = `<span style="color: var(--primary-color); font-weight: bold;">${CHARACTERS[top1[0]].name} (${top1[1].toFixed(1)}%)</span>`;
         }
 
         return `
-            <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white; border: 2px solid transparent; transition: all 0.3s;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <h3 style="margin:0; font-size: 16px; color: var(--dark-blue);">${player.name} (${player.gender})</h3>
-                        <button onclick="showPlayerDetails(${actualIdx})" style="background:none; border:none; cursor:pointer; font-size:16px; padding:0; color: var(--primary-color);" title="查看詳細資料">🔍</button>
+            <div class="player-card" data-pidx="${actualIdx}" style="cursor:grab; margin-bottom:10px; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background: white; border: 2px solid transparent; transition: all 0.3s; width: 100%; box-sizing: border-box;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 4px;">
+                    <h3 style="margin:0; font-size: 14px; color: var(--dark-blue); word-break: break-word; line-height: 1.3;">${player.name} <span style="font-size:12px; font-weight:normal;">(${player.gender})</span></h3>
+                    <div style="display:flex; gap: 6px; flex-shrink: 0; margin-top: 2px;">
+                        <button onclick="showPlayerDetails(${actualIdx})" style="background:none; border:none; cursor:pointer; font-size:14px; padding:0; color: var(--primary-color);" title="查看詳細資料">🔍</button>
+                        <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:16px; padding:0; line-height: 1;">×</button>
                     </div>
-                    <button onclick="deletePlayer(${actualIdx})" style="color:red; border:none; background:none; cursor:pointer; font-size:20px; padding:0; line-height: 1;">×</button>
                 </div>
-                <div style="font-size:14px; margin-top:8px; color: #666;">首選推薦：${recommendedDisplay}</div>
+                <div style="font-size:12px; margin-top:6px; color: #666; line-height: 1.4;">首選：<br>${recommendedDisplay}</div>
             </div>
         `;
     }).join('');
