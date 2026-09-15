@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: 'Kurewa';
     src: url('KurewaGothicCjkTc-Bold.ttf') format('truetype');
@@ -37,7 +38,7 @@
 }
 
 body {
-    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
+    font-family: 'Noto Sans TC', sans-serif;
     background-image: url('cover.jpg?v=2');
     background-size: cover;
     background-position: center;
@@ -145,7 +146,7 @@ body {
 }
 
 .title-header {
-    font-family: 'Kurewa', 'OpenHuninn', sans-serif;
+    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
     text-align: center;
     color: var(--dark-blue);
     margin-bottom: 25px;
@@ -157,7 +158,7 @@ body {
 
 /* Glassy Buttons */
 .btn {
-    font-family: 'Kurewa', 'OpenHuninn', sans-serif;
+    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
     display: inline-block;
     padding: 16px 24px;
     background: linear-gradient(135deg, rgba(108, 166, 193, 0.85), rgba(108, 166, 193, 0.5));
@@ -218,7 +219,7 @@ body {
     font-weight: 500;
 }
 .nana-bubble::before {
-    font-family: 'Kurewa', 'OpenHuninn', sans-serif;
+    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
     content: "奈奈";
     position: absolute;
     top: -16px;
@@ -362,7 +363,7 @@ body {
     opacity: 0.2;
 }
 .zone-title {
-    font-family: 'Kurewa', 'OpenHuninn', sans-serif;
+    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
     font-size: 18px;
     font-weight: normal;
     margin-bottom: 10px;
@@ -449,7 +450,7 @@ body {
     min-height: 120px;
 }
 .role-slot-title {
-    font-family: 'Kurewa', 'OpenHuninn', sans-serif;
+    font-family: 'OpenHuninn', 'Noto Sans TC', sans-serif;
     font-weight: normal;
     margin-bottom: 12px;
     color: var(--dark-blue);
